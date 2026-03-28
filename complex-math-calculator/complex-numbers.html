@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Numbers Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 12px 25px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            color: #333;
+        }
+
+        .nav-tab:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .calculator-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .calculator-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .input-row label {
+            font-weight: bold;
+            color: #333;
+            min-width: 120px;
+        }
+
+        .complex-input {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .complex-input input {
+            width: 80px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            text-align: center;
+        }
+
+        .complex-input input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .imaginary-unit {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        button.calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        button.calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .result-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .step {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #764ba2;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .final-answer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .examples-box {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #ffc107;
+        }
+
+        .examples-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .example-btn {
+            background: #ffc107;
+            color: #856404;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .example-btn:hover {
+            background: #ffdb4d;
+            transform: scale(1.05);
+        }
+
+        .formula-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #667eea;
+        }
+
+        .formula-box code {
+            background: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            color: #667eea;
+        }
+
+        .matrix-display {
+            display: inline-block;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px;
+        }
+
+        .matrix-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .matrix-cell {
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            text-align: center;
+            min-width: 60px;
+        }
+
+        .matrix-bracket {
+            font-size: 2em;
+            color: #667eea;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔢 Complex Numbers Calculator</h1>
+        <p class="subtitle">Interactive step-by-step calculations with examples</p>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('addition')">Addition</button>
+            <button class="nav-tab" onclick="showSection('multiplication')">Multiplication</button>
+            <button class="nav-tab" onclick="showSection('conjugate')">Conjugate</button>
+            <button class="nav-tab" onclick="showSection('modulus')">Modulus</button>
+            <button class="nav-tab" onclick="showSection('identity')">Key Identity</button>
+        </div>
+
+        <!-- Addition Section -->
+        <div id="addition" class="calculator-section active">
+            <div class="formula-box">
+                <h4>📐 Formula:</h4>
+                <code>(a₁+ib₁) + (a₂+ib₂) = (a₁+a₂) + i(b₁+b₂)</code>
+            </div>
+
+            <div class="examples-box">
+                <h4>📝 Pre-loaded Examples:</h4>
+                <button class="example-btn" onclick="loadExample('addition', 1)">Example 1: (3+2i) + (1+4i)</button>
+                <button class="example-btn" onclick="loadExample('addition', 2)">Example 2: (-2+5i) + (7-3i)</button>
+                <button class="example-btn" onclick="loadExample('addition', 3)">Example 3: (0+0i) + (4+6i)</button>
+            </div>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <label>First Number (z₁):</label>
+                    <div class="complex-input">
+                        <input type="number" id="add-a1" placeholder="a₁" value="3">
+                        <span>+</span>
+                        <input type="number" id="add-b1" placeholder="b₁" value="2">
+                        <span class="imaginary-unit">i</span>
+                    </div>
+                </div>
+                <div class="input-row">
+                    <label>Second Number (z₂):</label>
+                    <div class="complex-input">
+                        <input type="number" id="add-a2" placeholder="a₂" value="1">
+                        <span>+</span>
+                        <input type="number" id="add-b2" placeholder="b₂" value="4">
+                        <span class="imaginary-unit">i</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="calculate-btn" onclick="calculateAddition()">Calculate Addition</button>
+
+            <div id="addition-result" class="result-box" style="display:none;"></div>
+        </div>
+
+        <!-- Multiplication Section -->
+        <div id="multiplication" class="calculator-section">
+            <div class="formula-box">
+                <h4>📐 Formula:</h4>
+                <code>(a₁+ib₁)(a₂+ib₂) = (a₁a₂−b₁b₂) + i(a₁b₂+a₂b₁)</code>
+            </div>
+
+            <div class="examples-box">
+                <h4>📝 Pre-loaded Examples:</h4>
+                <button class="example-btn" onclick="loadExample('multiplication', 1)">Example 1: (2+3i) × (1+4i)</button>
+                <button class="example-btn" onclick="loadExample('multiplication', 2)">Example 2: (1+i) × (1-i)</button>
+                <button class="example-btn" onclick="loadExample('multiplication', 3)">Example 3: (-1+2i) × (3-i)</button>
+            </div>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <label>First Number (z₁):</label>
+                    <div class="complex-input">
+                        <input type="number" id="mul-a1" placeholder="a₁" value="2">
+                        <span>+</span>
+                        <input type="number" id="mul-b1" placeholder="b₁" value="3">
+                        <span class="imaginary-unit">i</span>
+                    </div>
+                </div>
+                <div class="input-row">
+                    <label>Second Number (z₂):</label>
+                    <div class="complex-input">
+                        <input type="number" id="mul-a2" placeholder="a₂" value="1">
+                        <span>+</span>
+                        <input type="number" id="mul-b2" placeholder="b₂" value="4">
+                        <span class="imaginary-unit">i</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="calculate-btn" onclick="calculateMultiplication()">Calculate Multiplication</button>
+
+            <div id="multiplication-result" class="result-box" style="display:none;"></div>
+        </div>
+
+        <!-- Conjugate Section -->
+        <div id="conjugate" class="calculator-section">
+            <div class="formula-box">
+                <h4>📐 Formula:</h4>
+                <code>z = a+ib → z̄ = a−ib</code>
+            </div>
+
+            <div class="examples-box">
+                <h4>📝 Pre-loaded Examples:</h4>
+                <button class="example-btn" onclick="loadExample('conjugate', 1)">Example 1: 3+4i</button>
+                <button class="example-btn" onclick="loadExample('conjugate', 2)">Example 2: -2+5i</button>
+                <button class="example-btn" onclick="loadExample('conjugate', 3)">Example 3: 7-3i</button>
+            </div>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <label>Complex Number (z):</label>
+                    <div class="complex-input">
+                        <input type="number" id="conj-a" placeholder="a" value="3">
+                        <span>+</span>
+                        <input type="number" id="conj-b" placeholder="b" value="4">
+                        <span class="imaginary-unit">i</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="calculate-btn" onclick="calculateConjugate()">Calculate Conjugate</button>
+
+            <div id="conjugate-result" class="result-box" style="display:none;"></div>
+        </div>
+
+        <!-- Modulus Section -->
+        <div id="modulus" class="calculator-section">
+            <div class="formula-box">
+                <h4>📐 Formula:</h4>
+                <code>|z| = √(a²+b²)</code>
+            </div>
+
+            <div class="examples-box">
+                <h4>📝 Pre-loaded Examples:</h4>
+                <button class="example-btn" onclick="loadExample('modulus', 1)">Example 1: |3+4i|</button>
+                <button class="example-btn" onclick="loadExample('modulus', 2)">Example 2: |1+i|</button>
+                <button class="example-btn" onclick="loadExample('modulus', 3)">Example 3: |5-12i|</button>
+            </div>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <label>Complex Number (z):</label>
+                    <div class="complex-input">
+                        <input type="number" id="mod-a" placeholder="a" value="3">
+                        <span>+</span>
+                        <input type="number" id="mod-b" placeholder="b" value="4">
+                        <span class="imaginary-unit">i</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="calculate-btn" onclick="calculateModulus()">Calculate Modulus</button>
+
+            <div id="modulus-result" class="result-box" style="display:none;"></div>
+        </div>
+
+        <!-- Key Identity Section -->
+        <div id="identity" class="calculator-section">
+            <div class="formula-box">
+                <h4>📐 Formula:</h4>
+                <code>z·z̄ = |z|²</code>
+            </div>
+
+            <div class="examples-box">
+                <h4>📝 Pre-loaded Examples:</h4>
+                <button class="example-btn" onclick="loadExample('identity', 1)">Example 1: z = 3+4i</button>
+                <button class="example-btn" onclick="loadExample('identity', 2)">Example 2: z = 1+i</button>
+                <button class="example-btn" onclick="loadExample('identity', 3)">Example 3: z = 5-2i</button>
+            </div>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <label>Complex Number (z):</label>
+                    <div class="complex-input">
+                        <input type="number" id="id-a" placeholder="a" value="3">
+                        <span>+</span>
+                        <input type="number" id="id-b" placeholder="b" value="4">
+                        <span class="imaginary-unit">i</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="calculate-btn" onclick="calculateIdentity()">Verify Identity</button>
+
+            <div id="identity-result" class="result-box" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.calculator-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function loadExample(type, exampleNum) {
+            const examples = {
+                addition: {
+                    1: { a1: 3, b1: 2, a2: 1, b2: 4 },
+                    2: { a1: -2, b1: 5, a2: 7, b2: -3 },
+                    3: { a1: 0, b1: 0, a2: 4, b2: 6 }
+                },
+                multiplication: {
+                    1: { a1: 2, b1: 3, a2: 1, b2: 4 },
+                    2: { a1: 1, b1: 1, a2: 1, b2: -1 },
+                    3: { a1: -1, b1: 2, a2: 3, b2: -1 }
+                },
+                conjugate: {
+                    1: { a: 3, b: 4 },
+                    2: { a: -2, b: 5 },
+                    3: { a: 7, b: -3 }
+                },
+                modulus: {
+                    1: { a: 3, b: 4 },
+                    2: { a: 1, b: 1 },
+                    3: { a: 5, b: -12 }
+                },
+                identity: {
+                    1: { a: 3, b: 4 },
+                    2: { a: 1, b: 1 },
+                    3: { a: 5, b: -2 }
+                }
+            };
+
+            const ex = examples[type][exampleNum];
+            
+            if (type === 'addition') {
+                document.getElementById('add-a1').value = ex.a1;
+                document.getElementById('add-b1').value = ex.b1;
+                document.getElementById('add-a2').value = ex.a2;
+                document.getElementById('add-b2').value = ex.b2;
+            } else if (type === 'multiplication') {
+                document.getElementById('mul-a1').value = ex.a1;
+                document.getElementById('mul-b1').value = ex.b1;
+                document.getElementById('mul-a2').value = ex.a2;
+                document.getElementById('mul-b2').value = ex.b2;
+            } else if (type === 'conjugate') {
+                document.getElementById('conj-a').value = ex.a;
+                document.getElementById('conj-b').value = ex.b;
+            } else if (type === 'modulus') {
+                document.getElementById('mod-a').value = ex.a;
+                document.getElementById('mod-b').value = ex.b;
+            } else if (type === 'identity') {
+                document.getElementById('id-a').value = ex.a;
+                document.getElementById('id-b').value = ex.b;
+            }
+        }
+
+        function calculateAddition() {
+            const a1 = parseFloat(document.getElementById('add-a1').value) || 0;
+            const b1 = parseFloat(document.getElementById('add-b1').value) || 0;
+            const a2 = parseFloat(document.getElementById('add-a2').value) || 0;
+            const b2 = parseFloat(document.getElementById('add-b2').value) || 0;
+
+            const realPart = a1 + a2;
+            const imagPart = b1 + b2;
+
+            let resultHTML = `
+                <div class="result-title">Step-by-Step Solution:</div>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Identify the components:</strong><br>
+                    z₁ = ${a1} + ${b1}i, where a₁=${a1}, b₁=${b1}<br>
+                    z₂ = ${a2} + ${b2}i, where a₂=${a2}, b₂=${b2}
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Add the real parts:</strong><br>
+                    a₁ + a₂ = ${a1} + ${a2} = <strong>${realPart}</strong>
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Add the imaginary parts:</strong><br>
+                    b₁ + b₂ = ${b1} + ${b2} = <strong>${imagPart}</strong>
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Combine results:</strong><br>
+                    (a₁+a₂) + i(b₁+b₂) = ${realPart} + ${imagPart}i
+                </div>
+                <div class="final-answer">
+                    Result: ${realPart} ${imagPart >= 0 ? '+' : ''}${imagPart}i
+                </div>
+            `;
+
+            document.getElementById('addition-result').innerHTML = resultHTML;
+            document.getElementById('addition-result').style.display = 'block';
+        }
+
+        function calculateMultiplication() {
+            const a1 = parseFloat(document.getElementById('mul-a1').value) || 0;
+            const b1 = parseFloat(document.getElementById('mul-b1').value) || 0;
+            const a2 = parseFloat(document.getElementById('mul-a2').value) || 0;
+            const b2 = parseFloat(document.getElementById('mul-b2').value) || 0;
+
+            const realPart = (a1 * a2) - (b1 * b2);
+            const imagPart = (a1 * b2) + (a2 * b1);
+
+            let resultHTML = `
+                <div class="result-title">Step-by-Step Solution:</div>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Identify the components:</strong><br>
+                    z₁ = ${a1} + ${b1}i, where a₁=${a1}, b₁=${b1}<br>
+                    z₂ = ${a2} + ${b2}i, where a₂=${a2}, b₂=${b2}
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Apply the formula: (a₁a₂−b₁b₂) + i(a₁b₂+a₂b₁)</strong><br>
+                    Real part: a₁a₂ − b₁b₂<br>
+                    = (${a1})(${a2}) − (${b1})(${b2})<br>
+                    = ${a1*a2} − ${b1*b2} = <strong>${realPart}</strong>
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Calculate imaginary part:</strong><br>
+                    a₁b₂ + a₂b₁<br>
+                    = (${a1})(${b2}) + (${a2})(${b1})<br>
+                    = ${a1*b2} + ${a2*b1} = <strong>${imagPart}</strong>
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Combine results:</strong><br>
+                    ${realPart} + ${imagPart}i
+                </div>
+                <div class="final-answer">
+                    Result: ${realPart} ${imagPart >= 0 ? '+' : ''}${imagPart}i
+                </div>
+            `;
+
+            document.getElementById('multiplication-result').innerHTML = resultHTML;
+            document.getElementById('multiplication-result').style.display = 'block';
+        }
+
+        function calculateConjugate() {
+            const a = parseFloat(document.getElementById('conj-a').value) || 0;
+            const b = parseFloat(document.getElementById('conj-b').value) || 0;
+            const conjB = -b;
+
+            let resultHTML = `
+                <div class="result-title">Step-by-Step Solution:</div>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Identify the complex number:</strong><br>
+                    z = ${a} + ${b}i, where a=${a}, b=${b}
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Apply the conjugate formula: z̄ = a−ib</strong><br>
+                    Keep the real part unchanged: ${a}<br>
+                    Negate the imaginary part: ${b} → ${conjB}
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Write the conjugate:</strong><br>
+                    z̄ = ${a} ${conjB >= 0 ? '+' : ''}${conjB}i
+                </div>
+                <div class="final-answer">
+                    Conjugate: ${a} ${conjB >= 0 ? '+' : ''}${conjB}i
+                </div>
+            `;
+
+            document.getElementById('conjugate-result').innerHTML = resultHTML;
+            document.getElementById('conjugate-result').style.display = 'block';
+        }
+
+        function calculateModulus() {
+            const a = parseFloat(document.getElementById('mod-a').value) || 0;
+            const b = parseFloat(document.getElementById('mod-b').value) || 0;
+            const aSquared = a * a;
+            const bSquared = b * b;
+            const sum = aSquared + bSquared;
+            const modulus = Math.sqrt(sum).toFixed(4);
+
+            let resultHTML = `
+                <div class="result-title">Step-by-Step Solution:</div>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Identify the complex number:</strong><br>
+                    z = ${a} + ${b}i, where a=${a}, b=${b}
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Apply the modulus formula: |z| = √(a²+b²)</strong><br>
+                    Calculate a²: ${a}² = <strong>${aSquared}</strong><br>
+                    Calculate b²: ${b}² = <strong>${bSquared}</strong>
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Add the squares:</strong><br>
+                    a² + b² = ${aSquared} + ${bSquared} = <strong>${sum}</strong>
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Take the square root:</strong><br>
+                    |z| = √${sum} ≈ <strong>${modulus}</strong>
+                </div>
+                <div class="final-answer">
+                    |z| = ${modulus}
+                </div>
+            `;
+
+            document.getElementById('modulus-result').innerHTML = resultHTML;
+            document.getElementById('modulus-result').style.display = 'block';
+        }
+
+        function calculateIdentity() {
+            const a = parseFloat(document.getElementById('id-a').value) || 0;
+            const b = parseFloat(document.getElementById('id-b').value) || 0;
+            
+            const conjA = a;
+            const conjB = -b;
+            
+            const z_zbar_real = (a * conjA) - (b * conjB);
+            const z_zbar_imag = (a * conjB) + (conjA * b);
+            
+            const modulusSquared = (a * a) + (b * b);
+
+            let resultHTML = `
+                <div class="result-title">Step-by-Step Verification:</div>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Given complex number:</strong><br>
+                    z = ${a} + ${b}i
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Find the conjugate:</strong><br>
+                    z̄ = ${conjA} ${conjB >= 0 ? '+' : ''}${conjB}i
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Calculate z·z̄:</strong><br>
+                    z·z̄ = (${a} + ${b}i)(${conjA} ${conjB >= 0 ? '+' : ''}${conjB}i)<br>
+                    = [${a}×${conjA} − ${b}×${conjB}] + i[${a}×${conjB} + ${conjA}×${b}]<br>
+                    = [${a*conjA} − (${b*conjB})] + i[${a*conjB} + ${conjA*b}]<br>
+                    = ${z_zbar_real} ${z_zbar_imag >= 0 ? '+' : ''}${z_zbar_imag}i<br>
+                    = <strong>${z_zbar_real}</strong> (imaginary part cancels out!)
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Calculate |z|²:</strong><br>
+                    |z| = √(${a}² + ${b}²) = √(${a*a} + ${b*b}) = √${a*a + b*b}<br>
+                    |z|² = ${a*a + b*b}
+                </div>
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <strong>Verify the identity:</strong><br>
+                    z·z̄ = ${z_zbar_real}<br>
+                    |z|² = ${modulusSquared}<br>
+                    ✅ <strong>z·z̄ = |z|² is verified!</strong>
+                </div>
+                <div class="final-answer">
+                    ✅ Identity Verified: z·z̄ = |z|² = ${modulusSquared}
+                </div>
+            `;
+
+            document.getElementById('identity-result').innerHTML = resultHTML;
+            document.getElementById('identity-result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Math Calculator - All Topics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 3em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .topic-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+
+        .topic-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .topic-title {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .topic-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .topic-topics {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .topic-topics li {
+            padding: 8px 0;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .topic-topics li:last-child {
+            border-bottom: none;
+        }
+
+        .topic-topics li:before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .topic-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            width: 100%;
+            text-align: center;
+        }
+
+        .topic-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .week-info {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #ffc107;
+        }
+
+        .week-info h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .features-section {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 40px;
+            border: 2px solid #28a745;
+        }
+
+        .features-section h3 {
+            color: #155724;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .feature-text {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Complex Mathematics Calculator</h1>
+        <p class="subtitle">Week 4 & 5: Interactive Step-by-Step Calculations</p>
+
+        <div class="week-info">
+            <h3>📋 Calculation Topics Checklist</h3>
+            <p>This collection covers all calculation-based topics from Weeks 4 & 5, organized by concept with interactive examples and step-by-step solutions.</p>
+        </div>
+
+        <div class="topic-grid">
+            <!-- Topic 1: Complex Numbers -->
+            <div class="topic-card">
+                <span class="topic-icon">🔢</span>
+                <h2 class="topic-title">Complex Numbers</h2>
+                <p class="topic-description">
+                    Master the fundamentals of complex number arithmetic including addition, multiplication, conjugates, and modulus calculations.
+                </p>
+                <ul class="topic-topics">
+                    <li>Addition: (a₁+ib₁) + (a₂+ib₂)</li>
+                    <li>Multiplication: (a₁+ib₁)(a₂+ib₂)</li>
+                    <li>Conjugate: z = a+ib → z̄ = a−ib</li>
+                    <li>Modulus: |z| = √(a²+b²)</li>
+                    <li>Key Identity: z·z̄ = |z|²</li>
+                </ul>
+                <a href="complex-numbers.html" class="topic-btn">Open Calculator →</a>
+            </div>
+
+            <!-- Topic 2: Complex Vector Spaces -->
+            <div class="topic-card">
+                <span class="topic-icon">🔷</span>
+                <h2 class="topic-title">Complex Vector Spaces (ℂⁿ)</h2>
+                <p class="topic-description">
+                    Work with vectors in complex space, perform scalar multiplication with complex scalars, and explore basis vectors.
+                </p>
+                <ul class="topic-topics">
+                    <li>Scalar multiplication with α ∈ ℂ</li>
+                    <li>Vector addition in ℂⁿ</li>
+                    <li>Origin & basis vectors</li>
+                    <li>n×n matrix input support</li>
+                    <li>Visual matrix representation</li>
+                </ul>
+                <a href="complex-vector-spaces.html" class="topic-btn">Open Calculator →</a>
+            </div>
+
+            <!-- Topic 3: Complex Dot Product -->
+            <div class="topic-card">
+                <span class="topic-icon">🔹</span>
+                <h2 class="topic-title">Complex Dot Product</h2>
+                <p class="topic-description">
+                    Calculate inner products using conjugate transpose, check orthogonality, and compute vector norms.
+                </p>
+                <ul class="topic-topics">
+                    <li>Dot product: x*·y = x̄ᵀy</li>
+                    <li>Orthogonality check: x*·y = 0</li>
+                    <li>Norm/Length: ‖x‖ = √(x*·x)</li>
+                    <li>Conjugate transpose operations</li>
+                    <li>Step-by-step verification</li>
+                </ul>
+                <a href="complex-dot-product.html" class="topic-btn">Open Calculator →</a>
+            </div>
+        </div>
+
+        <div class="features-section">
+            <h3>✨ Features of These Calculators</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">📝</div>
+                    <div class="feature-text">Pre-loaded Examples</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔢</div>
+                    <div class="feature-text">n×n Input Support</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-text">Matrix Format Display</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-text">Step-by-Step Solutions</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🖱️</div>
+                    <div class="feature-text">Interactive Interface</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">✅</div>
+                    <div class="feature-text">Instant Verification</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>How to Use:</strong> Click on any topic card above to open the corresponding calculator.</p>
+            <p style="margin-top: 10px;">Each calculator includes pre-loaded examples, customizable inputs, and detailed step-by-step solutions.</p>
+        </div>
+    </div>
+</body>
+</html>

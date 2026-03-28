@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Dot Product Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 12px 25px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            color: #333;
+        }
+
+        .nav-tab:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .calculator-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .calculator-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .vector-input-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+        }
+
+        .vector-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .matrix-container {
+            display: inline-block;
+            position: relative;
+            padding: 10px;
+        }
+
+        .matrix-bracket-left {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 20px;
+            border-left: 3px solid #667eea;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+        }
+
+        .matrix-bracket-right {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 20px;
+            border-right: 3px solid #667eea;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+
+        .matrix-content {
+            display: grid;
+            gap: 8px;
+            padding: 10px 25px;
+        }
+
+        .matrix-cell {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .matrix-cell input {
+            width: 70px;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        .matrix-cell input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .imaginary-unit {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .dimension-selector {
+            margin-bottom: 20px;
+        }
+
+        .dimension-selector label {
+            font-weight: bold;
+            color: #333;
+            margin-right: 15px;
+        }
+
+        .dimension-selector select {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        button.calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        button.calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .result-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .step {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #764ba2;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .final-answer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .examples-box {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #ffc107;
+        }
+
+        .examples-box h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .example-btn {
+            background: #ffc107;
+            color: #856404;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .example-btn:hover {
+            background: #ffdb4d;
+            transform: scale(1.05);
+        }
+
+        .formula-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #667eea;
+        }
+
+        .formula-box code {
+            background: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            color: #667eea;
+        }
+
+        .vector-display {
+            display: inline-block;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border: 2px solid #667eea;
+        }
+
+        .vector-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 0;
+        }
+
+        .orthogonality-indicator {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .orthogonal {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .not-orthogonal {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        .conjugate-display {
+            background: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔹 Complex Dot Product Calculator</h1>
+        <p class="subtitle">Inner product, orthogonality check, and norm calculations</p>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('dot-product')">Dot Product</button>
+            <button class="nav-tab" onclick="showSection('orthogonality')">Orthogonality Check</button>
+            <button class="nav-tab" onclick="showSection('norm')">Norm/Length</button>
+        </div>
+
+        <!-- Dot Product Section -->
+        <div id="dot-product" class="calculator-section active">
+            <div class="formula-box">
+                <h4>📐 Formula:</h4>
+                <code>x*·y = x̄ᵀy = Σ(x̄ᵢ · yᵢ)</code> (conjugate transpose of x, times y)
+            </div>
+
+            <div class="examples-box">
+                <h4>📝 Pre-loaded Examples:</h4>
+                <button class="example-btn" onclick="loadExample('dotproduct', 1)">Example 1: [1+i, 2-i] · [3, 1+2i]</button>
+                <button class="example-btn" onclick="loadExample('dotproduct', 2)">Example 2: [2, i, 1-i] · [1-i, 2+i, 3]</button>
+                <button class="example-btn" onclick="loadExample('dotproduct', 3)">Example 3: [1, 1, 1, 1] · [i, -i, 1, -1]</button>
+            </div>
+
+            <div class="input-group">
+                <div class="dimension-selector">
+                    <label>Vector Dimension (n):</label>
+                    <select id="dotproduct-dimension" onchange="updateDotProductInputs()">
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="vector-input-container">
+                    <div class="vector-title">First Vector (x):</div>
+                    <div id="dotproduct-x-inputs"></div>
+                </div>
+
+                <div class="vector-input-container">
+                    <div class="vector-title">Second Vector (y):</div>
+                    <div id="dotproduct-y-inputs"></div>
+                </div>
+            </div>
+
+            <button class="calculate-btn" onclick="calculateDotProduct()">Calculate Dot Product</button>
+
+            <div id="dotproduct-result" class="result-box" style="display:none;"></div>
+        </div>
+
+        <!-- Orthogonality Check Section -->
+        <div id="orthogonality" class="calculator-section">
+            <div class="formula-box">
+                <h4>📐 Formula:</h4>
+                <code>x*·y = 0 ⟹ x ⟂ y</code> (vectors are orthogonal)
+            </div>
+
+            <div class="examples-box">
+                <h4>📝 Pre-loaded Examples:</h4>
+                <button class="example-btn" onclick="loadExample('ortho', 1)">Example 1: [1, i] and [1, i]</button>
+                <button class="example-btn" onclick="loadExample('ortho', 2)">Example 2: [1+i, 1-i] and [1-i, -1-i]</button>
+                <button class="example-btn" onclick="loadExample('ortho', 3)">Example 3: [1, 0, i] and [i, 1, -1]</button>
+            </div>
+
+            <div class="input-group">
+                <div class="dimension-selector">
+                    <label>Vector Dimension (n):</label>
+                    <select id="ortho-dimension" onchange="updateOrthoInputs()">
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="vector-input-container">
+                    <div class="vector-title">First Vector (x):</div>
+                    <div id="ortho-x-inputs"></div>
+                </div>
+
+                <div class="vector-input-container">
+                    <div class="vector-title">Second Vector (y):</div>
+                    <div id="ortho-y-inputs"></div>
+                </div>
+            </div>
+
+            <button class="calculate-btn" onclick="checkOrthogonality()">Check Orthogonality</button>
+
+            <div id="ortho-result" class="result-box" style="display:none;"></div>
+        </div>
+
+        <!-- Norm Section -->
+        <div id="norm" class="calculator-section">
+            <div class="formula-box">
+                <h4>📐 Formula:</h4>
+                <code>‖x‖ = √(x*·x) = √(Σ|xᵢ|²)</code>
+            </div>
+
+            <div class="examples-box">
+                <h4>📝 Pre-loaded Examples:</h4>
+                <button class="example-btn" onclick="loadExample('norm', 1)">Example 1: ‖[3, 4]‖</button>
+                <button class="example-btn" onclick="loadExample('norm', 2)">Example 2: ‖[1+i, 1-i]‖</button>
+                <button class="example-btn" onclick="loadExample('norm', 3)">Example 3: ‖[1, i, -1, -i]‖</button>
+            </div>
+
+            <div class="input-group">
+                <div class="dimension-selector">
+                    <label>Vector Dimension (n):</label>
+                    <select id="norm-dimension" onchange="updateNormInputs()">
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="vector-input-container">
+                    <div class="vector-title">Vector (x):</div>
+                    <div id="norm-x-inputs"></div>
+                </div>
+            </div>
+
+            <button class="calculate-btn" onclick="calculateNorm()">Calculate Norm</button>
+
+            <div id="norm-result" class="result-box" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.calculator-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function updateDotProductInputs() {
+            const n = parseInt(document.getElementById('dotproduct-dimension').value);
+            
+            const xContainer = document.getElementById('dotproduct-x-inputs');
+            let xHtml = '<div class="matrix-container"><div class="matrix-bracket-left"></div><div class="matrix-content" style="grid-template-rows: repeat(' + n + ', 1fr);">';
+            
+            for (let i = 0; i < n; i++) {
+                xHtml += `
+                    <div class="matrix-cell">
+                        <input type="number" id="dot-x-real-${i}" placeholder="Re" value="${i === 0 ? 1 : 2}">
+                        <span>+</span>
+                        <input type="number" id="dot-x-imag-${i}" placeholder="Im" value="${i === 0 ? 1 : -1}">
+                        <span class="imaginary-unit">i</span>
+                    </div>
+                `;
+            }
+            
+            xHtml += '</div><div class="matrix-bracket-right"></div></div>';
+            xContainer.innerHTML = xHtml;
+            
+            const yContainer = document.getElementById('dotproduct-y-inputs');
+            let yHtml = '<div class="matrix-container"><div class="matrix-bracket-left"></div><div class="matrix-content" style="grid-template-rows: repeat(' + n + ', 1fr);">';
+            
+            for (let i = 0; i < n; i++) {
+                yHtml += `
+                    <div class="matrix-cell">
+                        <input type="number" id="dot-y-real-${i}" placeholder="Re" value="${i === 0 ? 3 : 1}">
+                        <span>+</span>
+                        <input type="number" id="dot-y-imag-${i}" placeholder="Im" value="${i === 0 ? 0 : 2}">
+                        <span class="imaginary-unit">i</span>
+                    </div>
+                `;
+            }
+            
+            yHtml += '</div><div class="matrix-bracket-right"></div></div>';
+            yContainer.innerHTML = yHtml;
+        }
+
+        function updateOrthoInputs() {
+            const n = parseInt(document.getElementById('ortho-dimension').value);
+            
+            const xContainer = document.getElementById('ortho-x-inputs');
+            let xHtml = '<div class="matrix-container"><div class="matrix-bracket-left"></div><div class="matrix-content" style="grid-template-rows: repeat(' + n + ', 1fr);">';
+            
+            for (let i = 0; i < n; i++) {
+                xHtml += `
+                    <div class="matrix-cell">
+                        <input type="number" id="ortho-x-real-${i}" placeholder="Re" value="${i === 0 ? 1 : 1}">
+                        <span>+</span>
+                        <input type="number" id="ortho-x-imag-${i}" placeholder="Im" value="${i === 0 ? 0 : 1}">
+                        <span class="imaginary-unit">i</span>
+                    </div>
+                `;
+            }
+            
+            xHtml += '</div><div class="matrix-bracket-right"></div></div>';
+            xContainer.innerHTML = xHtml;
+            
+            const yContainer = document.getElementById('ortho-y-inputs');
+            let yHtml = '<div class="matrix-container"><div class="matrix-bracket-left"></div><div class="matrix-content" style="grid-template-rows: repeat(' + n + ', 1fr);">';
+            
+            for (let i = 0; i < n; i++) {
+                yHtml += `
+                    <div class="matrix-cell">
+                        <input type="number" id="ortho-y-real-${i}" placeholder="Re" value="${i === 0 ? 1 : 1}">
+                        <span>+</span>
+                        <input type="number" id="ortho-y-imag-${i}" placeholder="Im" value="${i === 0 ? 0 : 1}">
+                        <span class="imaginary-unit">i</span>
+                    </div>
+                `;
+            }
+            
+            yHtml += '</div><div class="matrix-bracket-right"></div></div>';
+            yContainer.innerHTML = yHtml;
+        }
+
+        function updateNormInputs() {
+            const n = parseInt(document.getElementById('norm-dimension').value);
+            
+            const container = document.getElementById('norm-x-inputs');
+            let html = '<div class="matrix-container"><div class="matrix-bracket-left"></div><div class="matrix-content" style="grid-template-rows: repeat(' + n + ', 1fr);">';
+            
+            for (let i = 0; i < n; i++) {
+                html += `
+                    <div class="matrix-cell">
+                        <input type="number" id="norm-x-real-${i}" placeholder="Re" value="${i === 0 ? 3 : 4}">
+                        <span>+</span>
+                        <input type="number" id="norm-x-imag-${i}" placeholder="Im" value="0">
+                        <span class="imaginary-unit">i</span>
+                    </div>
+                `;
+            }
+            
+            html += '</div><div class="matrix-bracket-right"></div></div>';
+            container.innerHTML = html;
+        }
+
+        function loadExample(type, exampleNum) {
+            if (type === 'dotproduct') {
+                const examples = {
+                    1: { dim: 2, x: [{r: 1, i: 1}, {r: 2, i: -1}], y: [{r: 3, i: 0}, {r: 1, i: 2}] },
+                    2: { dim: 3, x: [{r: 2, i: 0}, {r: 0, i: 1}, {r: 1, i: -1}], y: [{r: 1, i: -1}, {r: 2, i: 1}, {r: 3, i: 0}] },
+                    3: { dim: 4, x: [{r: 1, i: 0}, {r: 1, i: 0}, {r: 1, i: 0}, {r: 1, i: 0}], y: [{r: 0, i: 1}, {r: 0, i: -1}, {r: 1, i: 0}, {r: -1, i: 0}] }
+                };
+                
+                const ex = examples[exampleNum];
+                document.getElementById('dotproduct-dimension').value = ex.dim;
+                updateDotProductInputs();
+                
+                setTimeout(() => {
+                    for (let i = 0; i < ex.dim; i++) {
+                        document.getElementById(`dot-x-real-${i}`).value = ex.x[i].r;
+                        document.getElementById(`dot-x-imag-${i}`).value = ex.x[i].i;
+                        document.getElementById(`dot-y-real-${i}`).value = ex.y[i].r;
+                        document.getElementById(`dot-y-imag-${i}`).value = ex.y[i].i;
+                    }
+                }, 100);
+            } else if (type === 'ortho') {
+                const examples = {
+                    1: { dim: 2, x: [{r: 1, i: 0}, {r: 0, i: 1}], y: [{r: 1, i: 0}, {r: 0, i: 1}] },
+                    2: { dim: 2, x: [{r: 1, i: 1}, {r: 1, i: -1}], y: [{r: 1, i: -1}, {r: -1, i: -1}] },
+                    3: { dim: 3, x: [{r: 1, i: 0}, {r: 0, i: 0}, {r: 0, i: 1}], y: [{r: 0, i: 1}, {r: 1, i: 0}, {r: -1, i: 0}] }
+                };
+                
+                const ex = examples[exampleNum];
+                document.getElementById('ortho-dimension').value = ex.dim;
+                updateOrthoInputs();
+                
+                setTimeout(() => {
+                    for (let i = 0; i < ex.dim; i++) {
+                        document.getElementById(`ortho-x-real-${i}`).value = ex.x[i].r;
+                        document.getElementById(`ortho-x-imag-${i}`).value = ex.x[i].i;
+                        document.getElementById(`ortho-y-real-${i}`).value = ex.y[i].r;
+                        document.getElementById(`ortho-y-imag-${i}`).value = ex.y[i].i;
+                    }
+                }, 100);
+            } else if (type === 'norm') {
+                const examples = {
+                    1: { dim: 2, x: [{r: 3, i: 0}, {r: 4, i: 0}] },
+                    2: { dim: 2, x: [{r: 1, i: 1}, {r: 1, i: -1}] },
+                    3: { dim: 4, x: [{r: 1, i: 0}, {r: 0, i: 1}, {r: -1, i: 0}, {r: 0, i: -1}] }
+                };
+                
+                const ex = examples[exampleNum];
+                document.getElementById('norm-dimension').value = ex.dim;
+                updateNormInputs();
+                
+                setTimeout(() => {
+                    for (let i = 0; i < ex.dim; i++) {
+                        document.getElementById(`norm-x-real-${i}`).value = ex.x[i].r;
+                        document.getElementById(`norm-x-imag-${i}`).value = ex.x[i].i;
+                    }
+                }, 100);
+            }
+        }
+
+        function calculateDotProduct() {
+            const n = parseInt(document.getElementById('dotproduct-dimension').value);
+            
+            const x = [];
+            const y = [];
+            
+            for (let i = 0; i < n; i++) {
+                x.push({
+                    real: parseFloat(document.getElementById(`dot-x-real-${i}`).value) || 0,
+                    imag: parseFloat(document.getElementById(`dot-x-imag-${i}`).value) || 0
+                });
+                y.push({
+                    real: parseFloat(document.getElementById(`dot-y-real-${i}`).value) || 0,
+                    imag: parseFloat(document.getElementById(`dot-y-imag-${i}`).value) || 0
+                });
+            }
+            
+            // x*·y = Σ(x̄ᵢ · yᵢ)
+            // x̄ᵢ · yᵢ = (x_real - i·x_imag)(y_real + i·y_imag)
+            // = (x_real·y_real + x_imag·y_imag) + i(x_real·y_imag - x_imag·y_real)
+            
+            let sumReal = 0;
+            let sumImag = 0;
+            let stepsHTML = '';
+            
+            for (let i = 0; i < n; i++) {
+                const xConj = { real: x[i].real, imag: -x[i].imag };
+                const product = {
+                    real: (xConj.real * y[i].real) - (xConj.imag * y[i].imag),
+                    imag: (xConj.real * y[i].imag) + (xConj.imag * y[i].real)
+                };
+                
+                sumReal += product.real;
+                sumImag += product.imag;
+                
+                stepsHTML += `
+                    <div style="margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+                        <strong>Component ${i+1}:</strong><br>
+                        x̄${i+1} = ${xConj.real} ${xConj.imag >= 0 ? '+' : ''}${xConj.imag}i<br>
+                        y${i+1} = ${y[i].real} ${y[i].imag >= 0 ? '+' : ''}${y[i].imag}i<br>
+                        x̄${i+1}·y${i+1} = (${xConj.real})(${y[i].real}) - (${xConj.imag})(${y[i].imag}) + i[(${xConj.real})(${y[i].imag}) + (${xConj.imag})(${y[i].real})]<br>
+                        = ${product.real} ${product.imag >= 0 ? '+' : ''}${product.imag}i
+                    </div>
+                `;
+            }
+            
+            let resultHTML = `
+                <div class="result-title">Step-by-Step Solution:</div>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Identify the vectors:</strong><br>
+                    x = <div class="vector-display">
+            `;
+            
+            for (let i = 0; i < n; i++) {
+                const sign = x[i].imag >= 0 ? '+' : '';
+                resultHTML += `<div class="vector-row">[${x[i].real} ${sign}${x[i].imag}i]</div>`;
+            }
+            
+            resultHTML += `</div><br>y = <div class="vector-display">`;
+            
+            for (let i = 0; i < n; i++) {
+                const sign = y[i].imag >= 0 ? '+' : '';
+                resultHTML += `<div class="vector-row">[${y[i].real} ${sign}${y[i].imag}i]</div>`;
+            }
+            
+            resultHTML += `</div></div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Take conjugate of x:</strong><br>
+                    x̄ is obtained by negating the imaginary part of each component:<br>
+            `;
+            
+            for (let i = 0; i < n; i++) {
+                const xConj = { real: x[i].real, imag: -x[i].imag };
+                const sign = xConj.imag >= 0 ? '+' : '';
+                resultHTML += `<div class="conjugate-display">x̄${i+1}: ${x[i].real} ${x[i].imag >= 0 ? '+' : ''}${x[i].imag}i → ${xConj.real} ${sign}${xConj.imag}i</div>`;
+            }
+            
+            resultHTML += `
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Multiply corresponding components (x̄ᵢ · yᵢ):</strong><br>
+            ` + stepsHTML;
+            
+            resultHTML += `
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Sum all products:</strong><br>
+            `;
+            
+            for (let i = 0; i < n; i++) {
+                const xConj = { real: x[i].real, imag: -x[i].imag };
+                const product = {
+                    real: (xConj.real * y[i].real) - (xConj.imag * y[i].imag),
+                    imag: (xConj.real * y[i].imag) + (xConj.imag * y[i].real)
+                };
+                resultHTML += `${product.real} ${product.imag >= 0 ? '+' : ''}${product.imag}i`;
+                if (i < n - 1) resultHTML += ' + ';
+            }
+            
+            resultHTML += `<br>= <strong>${sumReal} ${sumImag >= 0 ? '+' : ''}${sumImag}i</strong>
+                </div>
+                <div class="final-answer">
+                    x*·y = ${sumReal} ${sumImag >= 0 ? '+' : ''}${sumImag}i
+                </div>
+            `;
+            
+            document.getElementById('dotproduct-result').innerHTML = resultHTML;
+            document.getElementById('dotproduct-result').style.display = 'block';
+        }
+
+        function checkOrthogonality() {
+            const n = parseInt(document.getElementById('ortho-dimension').value);
+            
+            const x = [];
+            const y = [];
+            
+            for (let i = 0; i < n; i++) {
+                x.push({
+                    real: parseFloat(document.getElementById(`ortho-x-real-${i}`).value) || 0,
+                    imag: parseFloat(document.getElementById(`ortho-x-imag-${i}`).value) || 0
+                });
+                y.push({
+                    real: parseFloat(document.getElementById(`ortho-y-real-${i}`).value) || 0,
+                    imag: parseFloat(document.getElementById(`ortho-y-imag-${i}`).value) || 0
+                });
+            }
+            
+            let sumReal = 0;
+            let sumImag = 0;
+            
+            for (let i = 0; i < n; i++) {
+                const xConj = { real: x[i].real, imag: -x[i].imag };
+                const product = {
+                    real: (xConj.real * y[i].real) - (xConj.imag * y[i].imag),
+                    imag: (xConj.real * y[i].imag) + (xConj.imag * y[i].real)
+                };
+                
+                sumReal += product.real;
+                sumImag += product.imag;
+            }
+            
+            const isOrthogonal = Math.abs(sumReal) < 1e-10 && Math.abs(sumImag) < 1e-10;
+            
+            let resultHTML = `
+                <div class="result-title">Orthogonality Check:</div>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Calculate the dot product x*·y:</strong><br>
+                    Following the same process as above...<br><br>
+                    x*·y = <strong>${sumReal} ${sumImag >= 0 ? '+' : ''}${sumImag}i</strong>
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Check if the result equals zero:</strong><br>
+                    For orthogonality, we need x*·y = 0<br>
+                    Real part: ${sumReal} ${Math.abs(sumReal) < 1e-10 ? '≈ 0 ✓' : '≠ 0 ✗'}<br>
+                    Imaginary part: ${sumImag} ${Math.abs(sumImag) < 1e-10 ? '≈ 0 ✓' : '≠ 0 ✗'}
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Conclusion:</strong><br>
+            `;
+            
+            if (isOrthogonal) {
+                resultHTML += `
+                    Since x*·y = 0, the vectors are <strong>orthogonal</strong>.<br>
+                    <div class="orthogonality-indicator orthogonal">✓ x ⟂ y (Orthogonal)</div>
+                `;
+            } else {
+                resultHTML += `
+                    Since x*·y ≠ 0, the vectors are <strong>not orthogonal</strong>.<br>
+                    <div class="orthogonality-indicator not-orthogonal">✗ x ⋔ y (Not Orthogonal)</div>
+                `;
+            }
+            
+            resultHTML += `
+                </div>
+                <div class="final-answer">
+                    ${isOrthogonal ? '✓ Vectors ARE Orthogonal' : '✗ Vectors are NOT Orthogonal'}
+                </div>
+            `;
+            
+            document.getElementById('ortho-result').innerHTML = resultHTML;
+            document.getElementById('ortho-result').style.display = 'block';
+        }
+
+        function calculateNorm() {
+            const n = parseInt(document.getElementById('norm-dimension').value);
+            
+            const x = [];
+            
+            for (let i = 0; i < n; i++) {
+                x.push({
+                    real: parseFloat(document.getElementById(`norm-x-real-${i}`).value) || 0,
+                    imag: parseFloat(document.getElementById(`norm-x-imag-${i}`).value) || 0
+                });
+            }
+            
+            // ‖x‖ = √(x*·x) = √(Σ|xᵢ|²)
+            // |xᵢ|² = x_real² + x_imag²
+            
+            let sumSquaredModuli = 0;
+            let stepsHTML = '';
+            
+            for (let i = 0; i < n; i++) {
+                const modulusSquared = (x[i].real * x[i].real) + (x[i].imag * x[i].imag);
+                sumSquaredModuli += modulusSquared;
+                
+                stepsHTML += `
+                    <div style="margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 5px;">
+                        <strong>Component ${i+1}:</strong><br>
+                        x${i+1} = ${x[i].real} ${x[i].imag >= 0 ? '+' : ''}${x[i].imag}i<br>
+                        |x${i+1}|² = ${x[i].real}² + ${x[i].imag}² = ${x[i].real * x[i].real} + ${x[i].imag * x[i].imag} = <strong>${modulusSquared}</strong>
+                    </div>
+                `;
+            }
+            
+            const norm = Math.sqrt(sumSquaredModuli).toFixed(4);
+            
+            let resultHTML = `
+                <div class="result-title">Step-by-Step Solution:</div>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Identify the vector:</strong><br>
+                    x = <div class="vector-display">
+            `;
+            
+            for (let i = 0; i < n; i++) {
+                const sign = x[i].imag >= 0 ? '+' : '';
+                resultHTML += `<div class="vector-row">[${x[i].real} ${sign}${x[i].imag}i]</div>`;
+            }
+            
+            resultHTML += `</div></div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Formula: ‖x‖ = √(Σ|xᵢ|²)</strong><br>
+                    Calculate |xᵢ|² for each component:
+            ` + stepsHTML;
+            
+            resultHTML += `
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Sum of squared moduli:</strong><br>
+            `;
+            
+            for (let i = 0; i < n; i++) {
+                const modulusSquared = (x[i].real * x[i].real) + (x[i].imag * x[i].imag);
+                resultHTML += `${modulusSquared}`;
+                if (i < n - 1) resultHTML += ' + ';
+            }
+            
+            resultHTML += ` = <strong>${sumSquaredModuli}</strong>
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Take the square root:</strong><br>
+                    ‖x‖ = √${sumSquaredModuli} ≈ <strong>${norm}</strong>
+                </div>
+                <div class="final-answer">
+                    ‖x‖ = ${norm}
+                </div>
+            `;
+            
+            document.getElementById('norm-result').innerHTML = resultHTML;
+            document.getElementById('norm-result').style.display = 'block';
+        }
+
+        // Initialize inputs on page load
+        updateDotProductInputs();
+        updateOrthoInputs();
+        updateNormInputs();
+    </script>
+</body>
+</html>
